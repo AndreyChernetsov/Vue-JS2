@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #2e2e2e;
+}
+  
+#app {
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px black;
+}
+  
+.list {
+    display: flex;
+}
+  
+form {
+    width: 300px;
+    margin-bottom: 20px;
+}
+  
+form p {
+    margin: 5px 0;
+}
+  
+input {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0 15px;
+    box-sizing: border-box;
+}
+  
+button {
+    padding: 10px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+  
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+  
+#columns {
+    display: flex;
+}
+  
+.column {
+    width: 300px;
+    margin: 0 10px;  
+}
+  
+.cards {
+    padding: 0;
+}
+  
+.card {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+  
+.card h3 {
+    margin: 0;
+}
+  
+.task {
+    padding: 10px;
+    background-color: #eee;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+  
+.task.done {
+    background-color: #4caf50;
+    color: #fff;
+}
+  
+@media (max-width: 768px) {
+    .column {
+        flex: 100%;
+        margin: 0;
+    }
+}
