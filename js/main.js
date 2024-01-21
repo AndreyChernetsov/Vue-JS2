@@ -206,6 +206,23 @@ Vue.component("Notes", {
     }
 });
 
+Vue.component("card", {
+    template: `
+      <div class="card">
+        <h3>{{name}}</h3>
+          <ul>
+            <li v-for="point in points"><task :block="block" :point="point[0]" :pblock="pblock" :done="point[1]" @checked="updatechecked" @updatetwo="updatetwo"></task></li>
+          </ul>
+        <p>{{dat}}</p>
+      </div>
+    `,
+    data() {
+        return{
+        }
+    },
+});
+
+
 let app = new Vue({
     el: "#app",
     data: {
