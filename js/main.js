@@ -287,6 +287,47 @@ Vue.component("card", {
             
         })
     },
+    
+    props:{
+        name:{
+            type:String,
+            required:false,
+        },
+        points:{
+            type:Array,
+            required:false,
+        },
+        card_id:{
+            type:Number,
+            required:false,
+        },
+        count_of_checked:{
+            type:Number,
+            required:false,
+        },
+        dat:{
+            type:String,
+            required:false,
+        },
+        block:{
+            type:Boolean,
+            required:false
+        },
+        column:{
+            type:Number,
+            required:false,
+        },
+        pblock:{
+            tupe:Boolean,
+            required:false
+        }
+        
+    },
+    computed: {
+        count_of_tasks() {
+          return this.points.length;
+        },
+    }
 });
 
 
