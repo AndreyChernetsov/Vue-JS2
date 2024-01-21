@@ -287,7 +287,7 @@ Vue.component("card", {
             
         })
     },
-    
+
     props:{
         name:{
             type:String,
@@ -328,6 +328,51 @@ Vue.component("card", {
           return this.points.length;
         },
     }
+});
+
+Vue.component("task", {
+    template: `
+          <div class="task" @click="check" :class="{done:done}">{{point}}</div>
+    `,
+    data() {
+        return{
+        }
+    },
+    props:{
+        point:{
+            type: String,
+            required:false,
+        },
+        done:{
+            type: Boolean,
+            required:false,
+        },
+        block:{
+            type: Boolean,
+            required:false,
+        },       
+        pblock:{
+            tupe:Boolean,
+            required:false
+        }
+    },
+    methods: {
+        check() {
+            if (!this.pblock) {
+                if (!this.done) {
+                    if (!this.block) {
+                        this.done = true;
+                        this.$emit("checked", this.point);
+                    }
+                } else {
+                if (!this.block) {
+                    this.done = false;
+                    this.$emit("updatetwo", this.point);
+                }
+                }
+            }
+        } 
+    },
 });
 
 
