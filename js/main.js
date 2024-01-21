@@ -136,6 +136,73 @@ Vue.component("Notes", {
                 this.column1.push(info);
             }
         },
+
+        toColumnOne(name, points, card_id, count_of_checked) {
+            if (this.column1.length < 3) {
+              const info = {
+                name: name,
+                points: points,
+                card_id: card_id,
+                count_of_checked: count_of_checked,
+                };
+          
+            for (let i = 0; i < this.column2.length; i++) {
+                if (this.column2[i].card_id == card_id) {
+                    this.column2.splice(i, 1);
+                    break;
+                }
+            }
+          
+            this.column1.push(info);
+            }
+        },
+  
+        toColumnTwo(name, points, card_id, count_of_checked) {
+            if (this.column2.length === 5) {
+                this.blockOne = true;
+            } else {
+            const info = {
+                name: name,
+                points: points,
+                card_id: card_id,
+                count_of_checked: count_of_checked,
+            };
+          
+            for (let i = 0; i < this.column1.length; i++) {
+                if (this.column1[i].card_id == card_id) {
+                  this.column1.splice(i, 1);
+                  break;
+                }
+            }
+          
+            this.column2.push(info);
+            }
+          
+            let checks = 1;
+            eventBus.$emit('checkTwo', checks);
+        },
+  
+        toColumnThree(name, points, card_id, now) {
+            const info = {
+              name: name,
+              points: points,
+              card_id: card_id,
+              dat: now,
+            };
+          
+            for (let i = 0; i < this.column2.length; i++) {
+              if (this.column2[i].card_id == card_id) {
+                this.column2.splice(i, 1);
+                break;
+              }
+            }
+          
+            this.column3.push(info);
+            this.blockOne = false;
+          
+            let checks = 1;
+            eventBus.$emit('checkOne', checks);
+        },
     }
 });
 
