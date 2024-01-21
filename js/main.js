@@ -1,6 +1,6 @@
 let eventBus = new Vue()
 
-Vue.component("board", {
+Vue.component("Notes", {
     template: `
           <div class="board">
             <ul id="columns">
@@ -65,5 +65,85 @@ Vue.component("board", {
             card_id:0,
             blockOne:false,
         }
+    },
+
+    mounted() {
+        if (localStorage.getItem('allColumns')) {
+          try {
+            this.allColumns = JSON.parse(localStorage.getItem('allColumns'));
+            [this.column1, this.column2, this.column3, this.blockOne] = this.allColumns;
+          } catch (e) {
+            localStorage.removeItem('allColumns');
+          }
+        }
+    },
+    watch:{
+        column1(){
+            this.allColumns = [this.column1,this.column2,this.column3, this.blockOne]
+            const parsed = JSON.stringify(this.allColumns);
+            localStorage.setItem('allColumns', parsed);
+        },
+        column2(){
+            allColumns = [this.column1, this.column2, this.column3, this.blockOne]
+            const parsed = JSON.stringify(this.allColumns);
+            localStorage.setItem('allColumns', parsed);
+        },
+        column3(){
+            allColumns = [this.column1, this.column2, this.column3, this.blockOne]
+            const parsed = JSON.stringify(this.allColumns);
+            localStorage.setItem('allColumns', parsed);
+        },
+    }, 
+
+    methods:{
+        onSubmit() {
+            this.errors = [];
+            this.points = [];
+        
+            const addPoint = (point) => {
+                if (point) {
+                this.points.push([point, false]);
+                }
+            };
+        
+            addPoint(this.point1);
+            addPoint(this.point2);
+            addPoint(this.point3);
+            addPoint(this.point4);
+            addPoint(this.point5);
+        
+            if (this.points.length < 3) {
+                this.errors.push("Должно быть заполнено минимум 3 пункта");
+            }
+            if (!this.name) {
+                this.errors.push("Введите заголовок");
+            }
+            if  (this.column1.length >= 3) {
+                this.errors.push("Достигнуто максимальное число карточек");
+            }
+            if (this.blockOne) {
+                this.errors.push("Второй столбец переполнен");
+            }
+        
+            if (this.errors.length === 0) {
+                const info = {
+                name: this.name,
+                points: this.points,
+                card_id: this.card_id,
+                count_of_checked: 0,
+                };
+                this.card_id += 1;
+                this.column1.push(info);
+            }
+        },
+    }
+});
+
+let app = new Vue({
+    el: "#app",
+    data: {
+    },
+    methods: {
+
     },
 });
