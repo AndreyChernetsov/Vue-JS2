@@ -217,8 +217,75 @@ Vue.component("card", {
       </div>
     `,
     data() {
-        return{
+        return {
         }
+    },
+
+    methods: {
+        updatechecked(point) {
+        this.count_of_checked+=1;
+
+        for(i in this.points){
+            if(this.points[i][0]==point && this.points[i][1] != true){
+                this.points[i][1] = true
+                break
+            }
+        }    
+        if ((this.count_of_tasks) == (this.count_of_checked)){
+        var now = new Date() 
+        now = String(now);
+        console.log(this.name,this.points,this.card_id,now)
+        this.$emit("to-three",this.name,this.points,this.card_id,now);
+        }
+        else if ((this.count_of_tasks/2) <= (this.count_of_checked)){
+        this.$emit("to-two",this.name,this.points,this.card_id, this.count_of_checked);
+        }
+    },
+    updatetwo(point){
+        this.count_of_checked-=1;
+        if(this.column==2 || this.column==1){
+            for(i in this.points){
+                if(this.points[i][0]==point && this.points[i][1] == true){
+                    this.points[i][1] = false
+                    break
+                }
+            }
+            if(this.column==2){
+                if ((this.count_of_tasks/2) > (this.count_of_checked)){
+                    this.$emit("to-one",this.name,this.points,this.card_id, this.count_of_checked);
+
+                    }
+            }           
+        }
+    }
+    },
+    mounted() {
+        eventBus.$on('checkOne',checks => {
+            this.count_of_checked = 0
+            for(i in this.points){
+                if(this.points[i][1] == true){
+                    this.count_of_checked += 1
+                }
+            }    
+            
+            if ((this.count_of_tasks/2) <= (this.count_of_checked) && (this.count_of_tasks) != (this.count_of_checked)){
+            this.$emit("to-two",this.name,this.points,this.card_id, this.count_of_checked);
+        }
+            
+        })
+        eventBus.$on('checkTwo',checks => {
+            this.count_of_checked = 0
+            for(i in this.points){
+                if(this.points[i][1] == true){
+                    this.count_of_checked += 1
+                }
+            }    
+            
+            if ((this.count_of_tasks/2) > (this.count_of_checked)){
+            this.$emit("to-one",this.name,this.points,this.card_id, this.count_of_checked);
+        }
+            
+        })
     },
 });
 
