@@ -111,6 +111,11 @@ Vue.component("Notes", {
             addPoint(this.point3);
             addPoint(this.point4);
             addPoint(this.point5);
+
+            const uniquePoints = new Set(this.points.map(point => point[0]));
+            if (uniquePoints.size !== this.points.length) {
+                this.errors.push("Пункты должны иметь уникальные названия");
+            }
         
             if (this.points.length < 3) {
                 this.errors.push("Должно быть заполнено минимум 3 пункта");
@@ -126,14 +131,14 @@ Vue.component("Notes", {
             }
         
             if (this.errors.length === 0) {
-                const info = {
-                name: this.name,
-                points: this.points,
-                card_id: this.card_id,
-                count_of_checked: 0,
-                };
-                this.card_id += 1;
-                this.column1.push(info);
+              const info = {
+                  name: this.name,
+                  points: this.points,
+                  card_id: this.card_id,
+                  count_of_checked: 0,
+              };
+              this.card_id += 1;
+              this.column1.push(info);
             }
         },
 
@@ -332,48 +337,47 @@ Vue.component("card", {
 
 Vue.component("task", {
     template: `
-          <div class="task" @click="check" :class="{done:done}">{{point}}</div>
+      <div class="task" @click="check" :class="{done: done}">{{ point }}</div>
     `,
     data() {
-        return{
-        }
+      return {};
     },
-    props:{
-        point:{
-            type: String,
-            required:false,
-        },
-        done:{
-            type: Boolean,
-            required:false,
-        },
-        block:{
-            type: Boolean,
-            required:false,
-        },       
-        pblock:{
-            tupe:Boolean,
-            required:false
-        }
+    props: {
+      point: {
+        type: String,
+        required: false,
+      },
+      done: {
+        type: Boolean,
+        required: false,
+      },
+      block: {
+        type: Boolean,
+        required: false,
+      },
+      pblock: {
+        type: Boolean,
+        required: false,
+      },
     },
     methods: {
-        check() {
-            if (!this.pblock) {
-                if (!this.done) {
-                    if (!this.block) {
-                        this.done = true;
-                        this.$emit("checked", this.point);
-                    }
-                } else {
-                if (!this.block) {
-                    this.done = false;
-                    this.$emit("updatetwo", this.point);
-                }
-                }
+      check() {
+        if (!this.pblock) {
+          if (!this.done) {
+            if (!this.block) {
+              this.done = true;
+              this.$emit("checked", this.point);
             }
-        } 
+          } else {
+            if (!this.block) {
+              this.done = false;
+              this.$emit("updatetwo", this.point);
+            }
+          }
+        }
+      },
     },
-});
+  });
 
 
 let app = new Vue({
