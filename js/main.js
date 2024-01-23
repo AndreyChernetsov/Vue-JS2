@@ -223,29 +223,30 @@ Vue.component("card", {
     `,
     data() {
         return {
+          localCountOfChecked: this.count_of_checked || 0,
         }
     },
 
     methods: {
-        updatechecked(point) {
-        this.count_of_checked+=1;
-
-        for(i in this.points){
-            if(this.points[i][0]==point && this.points[i][1] != true){
-                this.points[i][1] = true
-                break
+      updatechecked(point) {
+        this.localCountOfChecked += 1;
+    
+        for (let i in this.points) {
+            if (this.points[i][0] == point && this.points[i][1] != true) {
+                this.points[i][1] = true;
+                break;
             }
-        }    
-        if ((this.count_of_tasks) == (this.count_of_checked)){
-        var now = new Date() 
-        now = String(now);
-        console.log(this.name,this.points,this.card_id,now)
-        this.$emit("to-three",this.name,this.points,this.card_id,now);
         }
-        else if ((this.count_of_tasks/2) <= (this.count_of_checked)){
-        this.$emit("to-two",this.name,this.points,this.card_id, this.count_of_checked);
+    
+        if (this.localCountOfChecked === this.count_of_tasks) {
+            var now = new Date();
+            now = String(now);
+            console.log(this.name, this.points, this.card_id, now);
+            this.$emit("to-three", this.name, this.points, this.card_id, now);
+        } else if (this.localCountOfChecked >= this.count_of_tasks / 2) {
+            this.$emit("to-two", this.name, this.points, this.card_id, this.localCountOfChecked);
         }
-    },
+      },
     updatetwo(point){
         this.count_of_checked-=1;
         if(this.column==2 || this.column==1){
@@ -337,10 +338,12 @@ Vue.component("card", {
 
 Vue.component("task", {
     template: `
-      <div class="task" @click="check" :class="{done: done}">{{ point }}</div>
+      <div class="task" @click="check" :class="{done: taskDone}">{{ point }}</div>
     `,
     data() {
-      return {};
+      return {
+        taskDone: this.done || false,
+      };
     },
     props: {
       point: {
@@ -363,14 +366,14 @@ Vue.component("task", {
     methods: {
       check() {
         if (!this.pblock) {
-          if (!this.done) {
+          if (!this.taskDone) {
             if (!this.block) {
-              this.done = true;
+              this.taskDone = true;
               this.$emit("checked", this.point);
             }
           } else {
             if (!this.block) {
-              this.done = false;
+              this.taskDone = false;
               this.$emit("updatetwo", this.point);
             }
           }
