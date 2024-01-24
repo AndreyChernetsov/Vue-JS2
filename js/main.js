@@ -1,4 +1,4 @@
-let eventBus = new Vue()
+let eventBus = new Vue() //Для связи между компонентами
 
 Vue.component("Notes", {
     template: `
@@ -142,7 +142,7 @@ Vue.component("Notes", {
             }
         },
 
-        toColumnOne(name, points, card_id, count_of_checked) {
+        toColumnOne(name, points, card_id, count_of_checked) { //Добавление в первый столбец, с функцией перехода обратно из 2 в 1
             if (this.column1.length < 3) {
               const info = {
                 name: name,
@@ -162,7 +162,7 @@ Vue.component("Notes", {
             }
         },
   
-        toColumnTwo(name, points, card_id, count_of_checked) {
+        toColumnTwo(name, points, card_id, count_of_checked) { //Добавление во второй столбец, с функцией перехода обратно в 1
             if (this.column2.length === 5) {
                 this.blockOne = true;
             } else {
@@ -184,10 +184,10 @@ Vue.component("Notes", {
             }
           
             let checks = 1;
-            eventBus.$emit('checkTwo', checks);
+            eventBus.$emit('checkTwo', checks); //Уведомляет другие части кода о изменении
         },
   
-        toColumnThree(name, points, card_id, now) {
+        toColumnThree(name, points, card_id, now) { //Добавление в третий столбец с удалением из второго столбца
             const info = {
               name: name,
               points: points,
@@ -223,58 +223,56 @@ Vue.component("card", {
     `,
     data() {
         return {
-          localCountOfChecked: this.count_of_checked || 0,
         }
     },
 
     methods: {
-      updatechecked(point) {
-        this.localCountOfChecked += 1;
-    
-        for (let i in this.points) {
-            if (this.points[i][0] == point && this.points[i][1] != true) {
-                this.points[i][1] = true;
-                break;
+        updatechecked(point) {
+        this.count_of_checked+=1;
+
+        for(i in this.points){ //Обновляет состояние пунктов в заметке
+            if(this.points[i][0]==point && this.points[i][1] != true){
+                this.points[i][1] = true
+                break
             }
+        }    
+        if ((this.count_of_tasks) == (this.count_of_checked)){ //Проверка выполнены ли все задачи
+        var now = new Date() 
+        now = String(now);
+        console.log(this.name,this.points,this.card_id,now)
+        this.$emit("to-three",this.name,this.points,this.card_id,now);
         }
-    
-        if (this.localCountOfChecked === this.count_of_tasks) {
-            var now = new Date();
-            now = String(now);
-            console.log(this.name, this.points, this.card_id, now);
-            this.$emit("to-three", this.name, this.points, this.card_id, now);
-        } else if (this.localCountOfChecked >= this.count_of_tasks / 2) {
-            this.$emit("to-two", this.name, this.points, this.card_id, this.localCountOfChecked);
+        else if ((this.count_of_tasks/2) <= (this.count_of_checked)){ //Если выполнено только половина пунктов передает данные заметки
+        this.$emit("to-two",this.name,this.points,this.card_id, this.count_of_checked);
         }
       },
-    updatetwo(point){
-        this.count_of_checked-=1;
-        if(this.column==2 || this.column==1){
-            for(i in this.points){
-                if(this.points[i][0]==point && this.points[i][1] == true){
-                    this.points[i][1] = false
-                    break
-                }
-            }
-            if(this.column==2){
-                if ((this.count_of_tasks/2) > (this.count_of_checked)){
-                    this.$emit("to-one",this.name,this.points,this.card_id, this.count_of_checked);
-
-                    }
-            }           
-        }
-    }
+      updatetwo(point){
+          this.count_of_checked-=1;
+          if(this.column==2 || this.column==1){ 
+              for(i in this.points){
+                  if(this.points[i][0]==point && this.points[i][1] == true){
+                      this.points[i][1] = false
+                      break
+                  }
+              }
+              if(this.column==2){
+                  if ((this.count_of_tasks/2) > (this.count_of_checked)){ //Если задач меньше чем требуется во втором столбце то
+                      this.$emit("to-one",this.name,this.points,this.card_id, this.count_of_checked);
+                      }
+              }           
+          }
+      }
     },
     mounted() {
         eventBus.$on('checkOne',checks => {
             this.count_of_checked = 0
-            for(i in this.points){
+            for(i in this.points){ //Пересчитывание выполненных пунктов
                 if(this.points[i][1] == true){
                     this.count_of_checked += 1
                 }
             }    
             
-            if ((this.count_of_tasks/2) <= (this.count_of_checked) && (this.count_of_tasks) != (this.count_of_checked)){
+            if ((this.count_of_tasks/2) <= (this.count_of_checked) && (this.count_of_tasks) != (this.count_of_checked)){ //Если кол-во выполненных пунктов больше или равно половине то
             this.$emit("to-two",this.name,this.points,this.card_id, this.count_of_checked);
         }
             
@@ -287,14 +285,14 @@ Vue.component("card", {
                 }
             }    
             
-            if ((this.count_of_tasks/2) > (this.count_of_checked)){
+            if ((this.count_of_tasks/2) > (this.count_of_checked)){ //Если кол-во пунктов меньше половины то
             this.$emit("to-one",this.name,this.points,this.card_id, this.count_of_checked);
         }
             
         })
     },
 
-    props:{
+    props:{ //Позволяет родительскому элементу обращаться к дочерним
         name:{
             type:String,
             required:false,
@@ -329,7 +327,7 @@ Vue.component("card", {
         }
         
     },
-    computed: {
+    computed: { //Автоматически отслеживает кол-во пунктов
         count_of_tasks() {
           return this.points.length;
         },
@@ -338,12 +336,10 @@ Vue.component("card", {
 
 Vue.component("task", {
     template: `
-      <div class="task" @click="check" :class="{done: taskDone}">{{ point }}</div>
+      <div class="task" @click="check" :class="{done: done}">{{ point }}</div>
     `,
     data() {
-      return {
-        taskDone: this.done || false,
-      };
+      return {};
     },
     props: {
       point: {
@@ -364,16 +360,16 @@ Vue.component("task", {
       },
     },
     methods: {
-      check() {
+      check() { //Вызывается при клике на пункт
         if (!this.pblock) {
-          if (!this.taskDone) {
+          if (!this.done) {
             if (!this.block) {
-              this.taskDone = true;
+              this.done = true;
               this.$emit("checked", this.point);
             }
           } else {
             if (!this.block) {
-              this.taskDone = false;
+              this.done = false;
               this.$emit("updatetwo", this.point);
             }
           }
@@ -388,6 +384,5 @@ let app = new Vue({
     data: {
     },
     methods: {
-
     },
 });
